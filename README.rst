@@ -1,16 +1,55 @@
-Python client for QuadrigaCX_ API v2
-------------------------------------
+Python client for QuadrigaCX
+----------------------------
+
+.. image:: https://travis-ci.org/joowani/quadriga.svg?branch=master
+    :target: https://travis-ci.org/joowani/quadriga
+
+.. image:: https://badge.fury.io/py/quadriga.svg
+    :target: https://badge.fury.io/py/quadriga
+    :alt: Package version
+
+.. image:: https://img.shields.io/badge/python-2.7%2C%203.4%2C%203.5%2C%203.6-blue.svg
+    :target: https://github.com/joowani/quadriga
+    :alt: Python Versions
+
+.. image:: https://coveralls.io/repos/github/joowani/quadriga/badge.svg?branch=master
+    :target: https://coveralls.io/github/joowani/quadriga?branch=master
+    :alt: Test Coverage
+
+.. image:: https://readthedocs.org/projects/quadriga/badge/?version=latest
+    :target: http://quadriga.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
+
+.. image:: https://img.shields.io/github/issues/joowani/quadriga.svg
+    :target: https://github.com/joowani/quadriga/issues
+    :alt: Issues Open
+
+.. image:: https://img.shields.io/badge/license-MIT-blue.svg
+    :target: https://raw.githubusercontent.com/joowani/quadriga/master/LICENSE
+    :alt: MIT License
+
+|
+
+Introduction
+============
+
+**Quadriga** is a Python client for QuadrigaCX_, a Canadian cryptocurrency
+exchange platform. It supports the latest version of the `REST API`_ provided
+by the exchange.
 
 .. _QuadrigaCX: https://www.quadrigacx.com
+.. _REST API: https://www.quadrigacx.com/api_info
+
 
 Requirements
 ============
 
-- Python 2.7.x, 3.4.x or 3.5.x
+- Python 2.7.x, 3.4.x, 3.5.x or 3.6.x
 - Recent version of the requests_ library
-- API secret, API key and client ID from a QuadrigaCX account
+- QuadrigaCX API secret, API key and client ID
 
 .. _requests: https://github.com/kennethreitz/requests
+
 
 Installation
 ============
@@ -98,3 +137,8 @@ Here are some usage examples:
 
     # Withdraw 20 ethers from QuadrigaCX to the given address
     client.withdraw('ether', 20, 'withdrawal_address')
+
+Check out the full `API documentation`_ for more details!
+
+.. _API documentation:
+    http://quadriga.readthedocs.io/en/latest/index.html

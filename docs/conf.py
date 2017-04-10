@@ -20,10 +20,9 @@
 import os
 import sys
 
-from quadriga.version import VERSION
-
 sys.path.insert(0, os.path.abspath('../quadriga'))
 
+from quadriga.version import VERSION
 
 # -- General configuration ------------------------------------------------
 
