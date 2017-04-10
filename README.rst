@@ -1,4 +1,4 @@
-Python client for QuadrigaCX
+Python Client for QuadrigaCX
 ----------------------------
 
 .. image:: https://travis-ci.org/joowani/quadriga.svg?branch=master
@@ -16,10 +16,6 @@ Python client for QuadrigaCX
     :target: https://coveralls.io/github/joowani/quadriga?branch=master
     :alt: Test Coverage
 
-.. image:: https://readthedocs.org/projects/quadriga/badge/?version=latest
-    :target: http://quadriga.readthedocs.io/en/latest/?badge=latest
-    :alt: Documentation Status
-
 .. image:: https://img.shields.io/github/issues/joowani/quadriga.svg
     :target: https://github.com/joowani/quadriga/issues
     :alt: Issues Open
@@ -33,9 +29,10 @@ Python client for QuadrigaCX
 Introduction
 ============
 
-**Quadriga** is a Python client for QuadrigaCX_, a Canadian cryptocurrency
-exchange platform. It supports the latest version of the `REST API`_ provided
-by the exchange.
+**Quadriga** is a Python client for QuadrigaCX_, a cryptocurrency exchange
+platform based in Vancouver, BC, Canada. It wraps the latest version of the
+`REST API`_ provided by the exchange and facilitates the process of buying
+and selling bitcoins and ethers.
 
 .. _QuadrigaCX: https://www.quadrigacx.com
 .. _REST API: https://www.quadrigacx.com/api_info
