@@ -1,5 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 
+import logging
+
 from quadriga.rest_client import RestClient
 from quadriga.exceptions import *
 
@@ -18,18 +20,10 @@ class QuadrigaClient(object):
     """
 
     # Order books in QuadrigaCX
-    order_books = {
-        'btc_cad',
-        'btc_usd',
-        'eth_cad',
-        'eth_usd'
-    }
+    order_books = {'btc_cad', 'btc_usd', 'eth_cad', 'eth_usd'}
 
     # Major currencies in QuadrigaCX
-    currencies = {
-        'bitcoin',
-        'ether'
-    }
+    crypto_currencies = {'bitcoin', 'ether'}
 
     def __init__(self,
                  api_key,
@@ -47,12 +41,22 @@ class QuadrigaClient(object):
         :param default_book: the default order book
         :type default_book: str | unicode
         """
+        self._logger = logging.getLogger('quadriga')
         self._rest_client = RestClient(
             api_key=api_key,
             api_secret=api_secret,
             client_id=client_id
         )
+        self._client_id = client_id
         self._default_book = self._verify_book(default_book)
+
+    def _log(self, message):
+        """Log a debug message.
+
+        :param message: the message to log
+        :type message: str | unicode
+        """
+        self._logger.debug('[client: {}] {}'.format(self._client_id, message))
 
     def _verify_book(self, book):
         """Verify if the order book is valid and return it (or the default).
@@ -79,10 +83,10 @@ class QuadrigaClient(object):
         :type currency: str | unicode
         :raises InvalidCurrencyError: on invalid currency
         """
-        if currency not in self.currencies:
+        if currency not in self.crypto_currencies:
             raise InvalidCurrencyError(
                 'Invalid currency "{}" (choose from {})'
-                .format(currency, list(self.currencies))
+                .format(currency, list(self.crypto_currencies))
             )
 
     def get_summary(self, book=None):
@@ -93,10 +97,12 @@ class QuadrigaClient(object):
         :returns: the trading summary
         :rtype: dict
         """
-        self._verify_book(book)
+        book = self._verify_book(book)
+        self._log('get trading summary for ' + book)
+
         return self._rest_client.get(
             endpoint='/ticker',
-            params={'book': self._verify_book(book)}
+            params={'book': book}
         )
 
     def get_public_orders(self, group=True, book=None):
@@ -109,12 +115,12 @@ class QuadrigaClient(object):
         :returns: all public open orders
         :rtype: dict
         """
+        book = self._verify_book(book)
+        self._log('get public orders for ' + book)
+
         return self._rest_client.get(
             endpoint='/order_book',
-            params={
-                'book': self._verify_book(book),
-                'group': 1 if group else 0
-            }
+            params={'book': book, 'group': 1 if group else 0}
         )
 
     def get_public_trades(self, time='hour', book=None):
@@ -127,12 +133,12 @@ class QuadrigaClient(object):
         :returns: a list of recent trades
         :rtype: [dict]
         """
+        book = self._verify_book(book)
+        self._log('get recent public trades for ' + book)
+
         return self._rest_client.get(
             endpoint='/transactions',
-            params={
-                'book': self._verify_book(book),
-                'time': time
-            }
+            params={'book': book, 'time': time}
         )
 
     def get_orders(self, book=None):
@@ -143,9 +149,12 @@ class QuadrigaClient(object):
         :returns: a list of user's open orders
         :rtype: [dict]
         """
+        book = self._verify_book(book)
+        self._log("get user's open orders for " + book)
+
         return self._rest_client.post(
             endpoint='/open_orders',
-            payload={'book': self._verify_book(book)}
+            payload={'book': book}
         )
 
     def get_trades(self, limit=100, offset=0, sort='desc', book=None):
@@ -162,10 +171,13 @@ class QuadrigaClient(object):
         :returns: a list of user's completed trades
         :rtype: [dict]
         """
+        book = self._verify_book(book)
+        self._log("get user's completed trades for " + book)
+
         return self._rest_client.post(
             endpoint='/user_transactions',
             payload={
-                'book': self._verify_book(book),
+                'book': book,
                 'limit': limit,
                 'offset': offset,
                 'sort': sort
@@ -178,6 +190,7 @@ class QuadrigaClient(object):
         :returns: the user's account balance
         :rtype: dict
         """
+        self._log("get user's account balance")
         return self._rest_client.post(endpoint='/balance')
 
     def buy_market_order(self, amount, book=None):
@@ -191,12 +204,12 @@ class QuadrigaClient(object):
             amount/price pairs, one for each order matched in the trade
         :rtype: dict
         """
+        book = self._verify_book(book)
+        self._log("buy {} at market price for {}".format(amount, book))
+
         return self._rest_client.post(
             endpoint='/buy',
-            payload={
-                'book': self._verify_book(book),
-                'amount': amount,
-            }
+            payload={'book': book, 'amount': amount}
         )
 
     def buy_limit_order(self, amount, price, book=None):
@@ -211,15 +224,12 @@ class QuadrigaClient(object):
         :returns: the details of the order placed
         :rtype: dict
         """
-        payload = {
-            'book': self._verify_book(book),
-            'amount': amount,
-        }
-        if price is not None:
-            payload['price'] = price
+        book = self._verify_book(book)
+        self._log("buy {} at price of {} for {}".format(amount, price, book))
+
         return self._rest_client.post(
             endpoint='/buy',
-            payload=payload
+            payload={'book': book, 'amount': amount, 'price': price}
         )
 
     def sell_market_order(self, amount, book=None):
@@ -233,12 +243,12 @@ class QuadrigaClient(object):
             of amount/price pairs, one for each matched in the trade
         :rtype: dict
         """
+        book = self._verify_book(book)
+        self._log("sell {} at market price for {}".format(amount, book))
+
         return self._rest_client.post(
             endpoint='/sell',
-            payload={
-                'book': self._verify_book(book),
-                'amount': amount
-            }
+            payload={'book': book, 'amount': amount}
         )
 
     def sell_limit_order(self, amount, price, book=None):
@@ -253,41 +263,42 @@ class QuadrigaClient(object):
         :returns: the details of the order placed
         :rtype: dict
         """
-        payload = {
-            'book': self._verify_book(book),
-            'amount': amount
-        }
-        if price is not None:
-            payload['price'] = price
+        book = self._verify_book(book)
+        self._log("sell {} at price of {} for {}".format(amount, price, book))
+
         return self._rest_client.post(
             endpoint='/sell',
-            payload=payload
+            payload={'book': book, 'amount': amount, 'price': price}
         )
 
-    def lookup_order(self, id):
+    def lookup_order(self, order_id):
         """Look up an order by its ID
 
-        :param id: the ID of the order to cancel (64 hexadecmial characters)
-        :type id: str | unicode
+        :param order_id: the ID of the order (64 hexadecmial characters)
+        :type order_id: str | unicode
         :returns: ``True`` if order has been found and cancelled
         :rtype: bool
         """
+        self._log('look up order {}'.format(order_id))
+
         return self._rest_client.post(
             endpoint='/lookup_order',
-            payload={'id': id}
+            payload={'id': order_id}
         )
 
-    def cancel_order(self, id):
+    def cancel_order(self, order_id):
         """Cancel an open order by its ID.
 
-        :param id: the ID of the order to cancel (64 hexadecmial characters)
-        :type id: str | unicode
+        :param order_id: the ID of the order (64 hexadecmial characters)
+        :type order_id: str | unicode
         :returns: ``True`` if order has been found and cancelled
         :rtype: bool
         """
+        self._log('cancel order {}'.format(order_id))
+
         return self._rest_client.post(
             endpoint='/cancel_order',
-            payload={'id': id}
+            payload={'id': order_id}
         )
 
     def get_deposit_address(self, currency):
@@ -300,6 +311,7 @@ class QuadrigaClient(object):
         :raises InvalidCurrencyError: on unknown currency
         """
         self._verify_currency(currency)
+        self._log('get deposit address for {}'.format(currency))
 
         if currency == 'bitcoin':
             return self._rest_client.post(
@@ -322,6 +334,7 @@ class QuadrigaClient(object):
         :raises InvalidCurrencyError: on unknown currency
         """
         self._verify_currency(currency)
+        self._log('withdraw {} {}s to {}'.format(amount, currency, address))
 
         payload = {'address': address, 'amount': amount}
         if currency == 'bitcoin':

@@ -46,6 +46,15 @@ def requests_post(monkeypatch):
     return mock_post
 
 
+@pytest.fixture(autouse=True)
+def logger(monkeypatch):
+    mock_logger = mock.MagicMock()
+    mock_get_logger = mock.MagicMock()
+    mock_get_logger.return_value = mock_logger
+    monkeypatch.setattr('logging.getLogger', mock_get_logger)
+    return mock_logger
+
+
 def set_response(http_op, code=200, body=test_body):
     mock_response = mock.MagicMock()
     mock_response.url = test_url
@@ -83,7 +92,7 @@ def test_package_version():
     assert len(VERSION.split('.')) == 3
 
 
-def test_get_summary(requests_get):
+def test_get_summary(requests_get, logger):
     client = build_client()
     output = client.get_summary()
     assert output == test_body
@@ -91,6 +100,8 @@ def test_get_summary(requests_get):
         url=build_url('/ticker'),
         params={'book': test_book}
     )
+    logger.debug.assert_called_with(
+        '[client: test_client_id] get trading summary for btc_usd')
     with pytest.raises(InvalidOrderBookError):
         client.get_summary(book='invalid_book')
 
@@ -142,7 +153,7 @@ def test_request_fail_3(monkeypatch):
     assert str(error.value) == '[HTTP 200] response body: foo'
 
 
-def test_get_public_orders(requests_get):
+def test_get_public_orders(requests_get, logger):
     client = build_client()
     output = client.get_public_orders()
     assert output == test_body
@@ -150,17 +161,23 @@ def test_get_public_orders(requests_get):
         url=build_url('/order_book'),
         params={'book': test_book, 'group': 1}
     )
+    logger.debug.assert_called_with(
+        '[client: test_client_id] get public orders for btc_usd')
+
     output = client.get_public_orders(group=False, book='eth_cad')
     assert output == test_body
     requests_get.assert_called_with(
         url=build_url('/order_book'),
         params={'book': 'eth_cad', 'group': 0}
     )
+    logger.debug.assert_called_with(
+        '[client: test_client_id] get public orders for eth_cad')
+
     with pytest.raises(InvalidOrderBookError):
         client.get_public_orders(book='invalid_book')
 
 
-def test_get_public_trades(requests_get):
+def test_get_public_trades(requests_get, logger):
     client = build_client()
     output = client.get_public_trades()
     assert output == test_body
@@ -168,17 +185,23 @@ def test_get_public_trades(requests_get):
         url=build_url('/transactions'),
         params={'book': test_book, 'time': 'hour'}
     )
+    logger.debug.assert_called_with(
+        '[client: test_client_id] get recent public trades for btc_usd')
+
     output = client.get_public_trades(time='minute', book='eth_cad')
     assert output == test_body
     requests_get.assert_called_with(
         url=build_url('/transactions'),
         params={'book': 'eth_cad', 'time': 'minute'}
     )
+    logger.debug.assert_called_with(
+        '[client: test_client_id] get recent public trades for eth_cad')
+
     with pytest.raises(InvalidOrderBookError):
         client.get_public_trades(book='invalid_book')
 
 
-def test_get_orders(requests_post):
+def test_get_orders(requests_post, logger):
     client = build_client()
     output = client.get_orders()
     assert output == test_body
@@ -191,11 +214,14 @@ def test_get_orders(requests_post):
             'signature': mock.ANY
         }
     )
+    logger.debug.assert_called_with(
+        "[client: test_client_id] get user's open orders for btc_usd")
+
     with pytest.raises(InvalidOrderBookError):
         client.get_orders(book='invalid_book')
 
 
-def test_get_trades(requests_post):
+def test_get_trades(requests_post, logger):
     client = build_client()
     output = client.get_trades()
     assert output == test_body
@@ -217,6 +243,9 @@ def test_get_trades(requests_post):
         sort='asc',
         book='eth_cad'
     )
+    logger.debug.assert_called_with(
+        "[client: test_client_id] get user's completed trades for eth_cad")
+
     assert output == test_body
     requests_post.assert_called_with(
         url=build_url('/user_transactions'),
@@ -230,11 +259,14 @@ def test_get_trades(requests_post):
             'signature': mock.ANY
         }
     )
+    logger.debug.assert_called_with(
+        "[client: test_client_id] get user's completed trades for eth_cad")
+
     with pytest.raises(InvalidOrderBookError):
         client.get_trades(book='invalid_book')
 
 
-def test_get_balance(requests_post):
+def test_get_balance(requests_post, logger):
     client = build_client()
     output = client.get_balance()
     assert output == test_body
@@ -246,9 +278,11 @@ def test_get_balance(requests_post):
             'signature': mock.ANY
         }
     )
+    logger.debug.assert_called_with(
+        "[client: test_client_id] get user's account balance")
 
 
-def test_buy_market_order(requests_post):
+def test_buy_market_order(requests_post, logger):
     client = build_client()
     output = client.buy_market_order(10)
     assert output == test_body
@@ -262,6 +296,9 @@ def test_buy_market_order(requests_post):
             'signature': mock.ANY
         }
     )
+    logger.debug.assert_called_with(
+        "[client: test_client_id] buy 10 at market price for btc_usd")
+
     output = client.buy_market_order(20, 'eth_cad')
     assert output == test_body
     requests_post.assert_called_with(
@@ -274,11 +311,14 @@ def test_buy_market_order(requests_post):
             'signature': mock.ANY
         }
     )
+    logger.debug.assert_called_with(
+        "[client: test_client_id] buy 20 at market price for eth_cad")
+
     with pytest.raises(InvalidOrderBookError):
         client.buy_market_order(1, 'invalid_book')
 
 
-def test_buy_limit_order(requests_post):
+def test_buy_limit_order(requests_post, logger):
     client = build_client()
     output = client.buy_limit_order(10, 5)
     assert output == test_body
@@ -293,6 +333,9 @@ def test_buy_limit_order(requests_post):
             'signature': mock.ANY
         }
     )
+    logger.debug.assert_called_with(
+        "[client: test_client_id] buy 10 at price of 5 for btc_usd")
+
     output = client.buy_limit_order(20, 1, 'eth_cad')
     assert output == test_body
     requests_post.assert_called_with(
@@ -306,11 +349,14 @@ def test_buy_limit_order(requests_post):
             'signature': mock.ANY
         }
     )
+    logger.debug.assert_called_with(
+        "[client: test_client_id] buy 20 at price of 1 for eth_cad")
+
     with pytest.raises(InvalidOrderBookError):
         client.buy_limit_order(1, 10, 'invalid_book')
 
 
-def test_sell_market_order(requests_post):
+def test_sell_market_order(requests_post, logger):
     client = build_client()
     output = client.sell_market_order(10)
     assert output == test_body
@@ -324,6 +370,9 @@ def test_sell_market_order(requests_post):
             'signature': mock.ANY
         }
     )
+    logger.debug.assert_called_with(
+        "[client: test_client_id] sell 10 at market price for btc_usd")
+
     output = client.sell_market_order(20, 'eth_cad')
     assert output == test_body
     requests_post.assert_called_with(
@@ -336,11 +385,14 @@ def test_sell_market_order(requests_post):
             'signature': mock.ANY
         }
     )
+    logger.debug.assert_called_with(
+        "[client: test_client_id] sell 20 at market price for eth_cad")
+
     with pytest.raises(InvalidOrderBookError):
         client.sell_market_order(10, 'invalid_book')
 
 
-def test_sell_limit_order(requests_post):
+def test_sell_limit_order(requests_post, logger):
     client = build_client()
     output = client.sell_limit_order(10, 5)
     assert output == test_body
@@ -355,6 +407,9 @@ def test_sell_limit_order(requests_post):
             'signature': mock.ANY
         }
     )
+    logger.debug.assert_called_with(
+        "[client: test_client_id] sell 10 at price of 5 for btc_usd")
+
     output = client.sell_limit_order(20, 1, 'eth_cad')
     assert output == test_body
     requests_post.assert_called_with(
@@ -368,11 +423,14 @@ def test_sell_limit_order(requests_post):
             'signature': mock.ANY
         }
     )
+    logger.debug.assert_called_with(
+        "[client: test_client_id] sell 20 at price of 1 for eth_cad")
+
     with pytest.raises(InvalidOrderBookError):
         client.sell_limit_order(1, 10, 'invalid_book')
 
 
-def test_lookup_order(requests_post):
+def test_lookup_order(requests_post, logger):
     client = build_client()
     output = client.lookup_order('foobar')
     assert output == test_body
@@ -385,9 +443,12 @@ def test_lookup_order(requests_post):
             'signature': mock.ANY
         }
     )
+    logger.debug.assert_called_with(
+        "[client: test_client_id] look up order foobar")
 
 
-def test_cancel_order(requests_post):
+
+def test_cancel_order(requests_post, logger):
     client = build_client()
     output = client.cancel_order('foobar')
     assert output == test_body
@@ -400,9 +461,11 @@ def test_cancel_order(requests_post):
             'signature': mock.ANY
         }
     )
+    logger.debug.assert_called_with(
+        "[client: test_client_id] cancel order foobar")
 
 
-def test_get_deposit_address(requests_post):
+def test_get_deposit_address(requests_post, logger):
     client = build_client()
     output = client.get_deposit_address('ether')
     assert output == test_body
@@ -414,6 +477,9 @@ def test_get_deposit_address(requests_post):
             'signature': mock.ANY
         }
     )
+    logger.debug.assert_called_with(
+        "[client: test_client_id] get deposit address for ether")
+
     output = client.get_deposit_address('bitcoin')
     assert output == test_body
     requests_post.assert_called_with(
@@ -424,11 +490,14 @@ def test_get_deposit_address(requests_post):
             'signature': mock.ANY
         }
     )
+    logger.debug.assert_called_with(
+        "[client: test_client_id] get deposit address for bitcoin")
+
     with pytest.raises(InvalidCurrencyError):
         client.get_deposit_address('invalid_currency')
 
 
-def test_withdraw(requests_post):
+def test_withdraw(requests_post, logger):
     client = build_client()
     output = client.withdraw('ether', 1000, test_address)
     assert output == test_body
@@ -442,6 +511,9 @@ def test_withdraw(requests_post):
             'signature': mock.ANY
         }
     )
+    logger.debug.assert_called_with(
+        "[client: test_client_id] withdraw 1000 ethers to test_address")
+
     output = client.withdraw('bitcoin', 1000, test_address)
     assert output == test_body
     requests_post.assert_called_with(
@@ -454,5 +526,8 @@ def test_withdraw(requests_post):
             'signature': mock.ANY
         }
     )
+    logger.debug.assert_called_with(
+        "[client: test_client_id] withdraw 1000 bitcoins to test_address")
+
     with pytest.raises(InvalidCurrencyError):
         client.withdraw('invalid_currency', 1000, test_address)
