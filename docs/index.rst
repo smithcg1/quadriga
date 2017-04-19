@@ -6,7 +6,7 @@
 Welcome to the documentation for **quadriga**, a Python client for QuadrigaCX_,
 a cryptocurrency exchange platform based in Vancouver, BC, Canada. It wraps the
 latest version of the `REST API`_ provided by the exchange and facilitates the
-process of trading bitcoins and ethers.
+process of trading bitcoin and ether.
 
 .. _QuadrigaCX: https://www.quadrigacx.com
 .. _REST API: https://www.quadrigacx.com/api_info
@@ -40,10 +40,7 @@ Requirements
 ============
 
 - Python 2.7.x, 3.4.x, 3.5.x or 3.6.x
-- Recent version of the requests_ library
 - QuadrigaCX API secret, API key and client ID
-
-.. _requests: https://github.com/kennethreitz/requests
 
 
 Installation
@@ -77,3 +74,4 @@ Contents
     intro
     api
     errors
+    logging
