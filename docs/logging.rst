@@ -2,13 +2,15 @@ Logging
 -------
 
 By default, :class:`quadriga.QuadrigaClient` logs API call history using the
-``quadriga`` logger at ``logging.INFO`` level.
+``quadriga`` logger at ``logging.DEBUG`` level.
 
 Here is an example showing how the logger can be enabled and customized:
 
 .. code-block:: python
 
     import logging
+
+    from quadriga import QuadrigaClient
 
     logger = logging.getLogger('quadriga')
 
@@ -42,7 +44,7 @@ The logging output for above would look something like this:
     [2017-04-12 23:55:53,741] [client: 77889] get public orders for eth_cad
 
 In order to see the full request information, turn on logging for the requests_
-library (the HTTP client **quadriga** uses under the hood):
+library which **quadriga** uses under the hood:
 
 .. _requests: https://github.com/kennethreitz/requests
 
