@@ -75,3 +75,4 @@ Contents
     api
     errors
     logging
+    public

@@ -9,6 +9,9 @@ from quadriga.exceptions import *
 class QuadrigaClient(object):
     """Python client for QuadrigaCX API v2.
 
+    If only public API calls are required, **api_key**, **api_secret** and
+    **client_id** parameters do not need to be set.
+
     :param api_key: QuadrigaCX API key
     :type api_key: str | unicode
     :param api_secret: QuadrigaCX API secret
@@ -26,9 +29,9 @@ class QuadrigaClient(object):
     crypto_currencies = {'bitcoin', 'ether'}
 
     def __init__(self,
-                 api_key,
-                 api_secret,
-                 client_id,
+                 api_key=None,
+                 api_secret=None,
+                 client_id=None,
                  default_book='eth_cad'):
         """Initialize the client.
 

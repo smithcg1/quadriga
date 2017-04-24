@@ -15,9 +15,9 @@ class RestClient(object):
     endpoint_prefix = 'https://api.quadrigacx.com/v2'
 
     def __init__(self,
-                 api_key,
-                 api_secret,
-                 client_id):
+                 api_key=None,
+                 api_secret=None,
+                 client_id=None):
         """Wrapper for sending requests to QuadrigaCX.
 
         Authentication using HMAC SHA256 is carried out here.
@@ -29,8 +29,8 @@ class RestClient(object):
         :param client_id: the QuadrigaCX client ID
         :type client_id: str | unicode
         """
-        self._api_key = api_key
-        self._hmac_key = api_secret.encode('utf-8')
+        self._api_key = str(api_key)
+        self._hmac_key = str(api_secret).encode('utf-8')
         self._client_id = str(client_id)
         self._http_success = {code for code in range(200, 210)}
 

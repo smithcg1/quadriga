@@ -6,7 +6,7 @@ base exception :class:`quadriga.exceptions.QuadrigaError`. When a request to
 QuadrigaCX fails, the client raises :class:`quadriga.exceptions.RequestError`
 which lightly wraps the HTTP response returned from the server.
 
-Here is an example showing how an exception can be handled:
+Here is an example showing how an exception can be caught and handled:
 
 .. code-block:: python
 
