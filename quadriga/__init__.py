@@ -23,7 +23,7 @@ class QuadrigaClient(object):
     """
 
     # Order books in QuadrigaCX
-    order_books = {'btc_cad', 'btc_usd', 'eth_cad', 'eth_usd'}
+    order_books = {'btc_cad', 'btc_usd', 'eth_cad', 'eth_btc'}
 
     # Major currencies in QuadrigaCX
     crypto_currencies = {'bitcoin', 'ether'}
