@@ -37,7 +37,7 @@ Here is an example showing how the logger can be enabled and customized:
 
 The logging output for above would look something like this:
 
-.. code-block:: bash
+.. code-block:: console
 
     [2017-04-12 23:55:51,954] [client: 77889] get trading summary for btc_usd
     [2017-04-12 23:55:52,230] [client: 77889] get user's account balance

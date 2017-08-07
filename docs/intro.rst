@@ -58,10 +58,16 @@ used:
     # Return the deposit address used for funding ether
     client.get_deposit_address('ether')
 
+    # Return the deposit address used for funding litecoin
+    client.get_deposit_address('litecoin')
+
     # Withdraw 15 bitcoins from QuadrigaCX to the given address
-    client.withdraw('bitcoin', 15, 'withdrawal_address')
+    client.withdraw('bitcoin', 15, 'my_bitcoin_withdrawal_address')
 
     # Withdraw 20 ethers from QuadrigaCX to the given address
-    client.withdraw('ether', 20, 'withdrawal_address')
+    client.withdraw('ether', 20, 'my_ether_withdrawal_address')
+
+    # Withdraw 50 litecoins from QuadrigaCX to the given address
+    client.withdraw('litecoin', 50, 'my_litecoin_withdrawal_address')
 
 Refer to the :ref:`API` for more details.

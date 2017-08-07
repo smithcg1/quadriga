@@ -92,6 +92,17 @@ def test_package_version():
     assert len(VERSION.split('.')) == 3
 
 
+def test_set_order_book():
+    client = build_client(default_book='eth_cad')
+    assert getattr(client, '_default_book') == 'eth_cad'
+
+    client.set_default_book('btc_cad')
+    assert getattr(client, '_default_book') == 'btc_cad'
+
+    with pytest.raises(InvalidOrderBookError):
+        client.set_default_book('invalid_book')
+
+
 def test_get_summary(requests_get, logger):
     client = build_client()
     output = client.get_summary()
@@ -493,6 +504,19 @@ def test_get_deposit_address(requests_post, logger):
     logger.debug.assert_called_with(
         "[client: test_client_id] get deposit address for bitcoin")
 
+    output = client.get_deposit_address('litecoin')
+    assert output == test_body
+    requests_post.assert_called_with(
+        url=build_url('/litecoin_deposit_address'),
+        json={
+            'key': test_key,
+            'nonce': test_nonce,
+            'signature': mock.ANY
+        }
+    )
+    logger.debug.assert_called_with(
+        "[client: test_client_id] get deposit address for litecoin")
+
     with pytest.raises(InvalidCurrencyError):
         client.get_deposit_address('invalid_currency')
 
@@ -528,6 +552,21 @@ def test_withdraw(requests_post, logger):
     )
     logger.debug.assert_called_with(
         "[client: test_client_id] withdraw 1000 bitcoins to test_address")
+
+    output = client.withdraw('litecoin', 1000, test_address)
+    assert output == test_body
+    requests_post.assert_called_with(
+        url=build_url('/litecoin_withdrawal'),
+        json = {
+            'address': test_address,
+            'amount': 1000,
+            'key': test_key,
+            'nonce': test_nonce,
+            'signature': mock.ANY
+        }
+    )
+    logger.debug.assert_called_with(
+        "[client: test_client_id] withdraw 1000 litecoins to test_address")
 
     with pytest.raises(InvalidCurrencyError):
         client.withdraw('invalid_currency', 1000, test_address)

@@ -32,7 +32,7 @@ Introduction
 **Quadriga** is a Python client for QuadrigaCX_, a cryptocurrency exchange
 platform based in Vancouver, BC, Canada. It wraps the latest version of the
 `REST API`_ provided by the exchange and facilitates the process of trading
-bitcoin and ether.
+bitcoin, ethereum and litecoin.
 
 .. _QuadrigaCX: https://www.quadrigacx.com
 .. _REST API: https://www.quadrigacx.com/api_info
@@ -126,11 +126,17 @@ Here are some usage examples:
     # Return the deposit address used for funding ether
     client.get_deposit_address('ether')
 
+    # Return the deposit address used for funding litecoin
+    client.get_deposit_address('litecoin')
+
     # Withdraw 15 bitcoins from QuadrigaCX to the given address
-    client.withdraw('bitcoin', 15, 'withdrawal_address')
+    client.withdraw('bitcoin', 15, 'my_bitcoin_withdrawal_address')
 
     # Withdraw 20 ethers from QuadrigaCX to the given address
-    client.withdraw('ether', 20, 'withdrawal_address')
+    client.withdraw('ether', 20, 'my_ether_withdrawal_address')
+
+    # Withdraw 50 litecoins from QuadrigaCX to the given address
+    client.withdraw('litecoin', 50, 'my_litecoin_withdrawal_address')
 
 Check out the full `API documentation`_ for more details!
 

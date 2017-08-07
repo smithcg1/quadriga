@@ -23,10 +23,16 @@ class QuadrigaClient(object):
     """
 
     # Order books in QuadrigaCX
-    order_books = {'btc_cad', 'btc_usd', 'eth_cad', 'eth_btc'}
+    order_books = {
+        'btc_cad',
+        'btc_usd',
+        'eth_cad',
+        'eth_btc',
+        'ltc_cad',
+    }
 
     # Major currencies in QuadrigaCX
-    crypto_currencies = {'bitcoin', 'ether'}
+    crypto_currencies = {'bitcoin', 'ether', 'litecoin'}
 
     def __init__(self,
                  api_key=None,
@@ -82,7 +88,8 @@ class QuadrigaClient(object):
     def _verify_currency(self, currency):
         """Verify if the currency is valid.
         
-        :param currency: the major currency (``bitcoin`` or ``ether``)
+        :param currency: the major currency
+            (``"bitcoin"``/``"ether"``/``"litecoin"``)
         :type currency: str | unicode
         :raises InvalidCurrencyError: on invalid currency
         """
@@ -91,6 +98,14 @@ class QuadrigaClient(object):
                 'Invalid currency "{}" (choose from {})'
                 .format(currency, list(self.crypto_currencies))
             )
+
+    def set_default_book(self, book):
+        """Update the default order book of the client.
+
+        :param book: the name of the order book
+        :type book: str | unicode
+        """
+        self._default_book = self._verify_book(book)
 
     def get_summary(self, book=None):
         """Return the latest trading summary.
@@ -129,7 +144,7 @@ class QuadrigaClient(object):
     def get_public_trades(self, time='hour', book=None):
         """Return recently completed public trades.
 
-        :param time: the time frame (``minute`` or ``hour``)
+        :param time: the time frame (``"minute"`` or ``"hour"``)
         :type time: str | unicode
         :param book: the name of the order book
         :type book: str | unicode
@@ -167,7 +182,7 @@ class QuadrigaClient(object):
         :type limit: int
         :param offset: the number of trades to skip
         :type offset: int
-        :param sort: sort by date and time (``desc`` or ``asc``)
+        :param sort: sort by date and time (``"desc"`` or ``"asc"``)
         :type sort: str | unicode
         :param book: the name of the order book
         :type book: str | unicode
@@ -307,7 +322,8 @@ class QuadrigaClient(object):
     def get_deposit_address(self, currency):
         """Return the deposit address for funding on QuadrigaCX.
 
-        :param currency: the major currency (``bitcoin`` or ``ether``)
+        :param currency: the major currency
+            (``"bitcoin"``/``"ether"``/``"litecoin"``)
         :type currency: str | unicode
         :returns: the user's deposit address on 
         :rtype: str | unicode
@@ -316,19 +332,15 @@ class QuadrigaClient(object):
         self._verify_currency(currency)
         self._log('get deposit address for {}'.format(currency))
 
-        if currency == 'bitcoin':
-            return self._rest_client.post(
-                endpoint='/bitcoin_deposit_address'
-            )
-        elif currency == 'ether':
-            return self._rest_client.post(
-                endpoint='/ether_deposit_address'
-            )
+        return self._rest_client.post(
+            endpoint='/{}_deposit_address'.format(currency)
+        )
 
     def withdraw(self, currency, amount, address):
         """Withdraw an amount of currency from QuadrigaCX to user's address.
 
-        :param currency: the major currency (``bitcoin`` or ``ether``)
+        :param currency: the major currency
+            (``"bitcoin"``/``"ether"``/``"litecoin"``)
         :type currency: str | unicode
         :param amount: the amount to withdraw
         :type amount: int | float | str | unicode
@@ -340,13 +352,8 @@ class QuadrigaClient(object):
         self._log('withdraw {} {}s to {}'.format(amount, currency, address))
 
         payload = {'address': address, 'amount': amount}
-        if currency == 'bitcoin':
-            return self._rest_client.post(
-                endpoint='/bitcoin_withdrawal',
-                payload=payload
-            )
-        elif currency == 'ether':
-            return self._rest_client.post(
-                endpoint='/ether_withdrawal',
-                payload=payload
-            )
+
+        return self._rest_client.post(
+            endpoint='/{}_withdrawal'.format(currency),
+            payload=payload
+        )
