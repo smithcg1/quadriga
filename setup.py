@@ -12,7 +12,7 @@ setup(
     author_email='joohwan.oh@outlook.com',
     url='https://github.com/joowani/quadriga',
     packages=find_packages(),
-    include_package_data=True,
+    license='MIT',
     install_requires=['requests'],
     tests_require=['pytest', 'mock'],
     classifiers=[
