@@ -3,13 +3,15 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to the documentation for **quadriga**, a Python client for QuadrigaCX_,
-a cryptocurrency exchange platform based in Vancouver, BC, Canada. It wraps the
-latest version of the `REST API`_ provided by the exchange and facilitates the
-process of trading bitcoin and ether.
+**Quadriga** is a Python client for QuadrigaCX_, a Canadian cryptocurrency
+exchange platform. It wraps `REST API v2`_ and facilitates the process of
+trading Bitcoin_, Ethereum_ and Litecoin_.
 
 .. _QuadrigaCX: https://www.quadrigacx.com
-.. _REST API: https://www.quadrigacx.com/api_info
+.. _REST API v2: https://www.quadrigacx.com/api_info
+.. _Bitcoin: https://bitcoin.org/
+.. _Ethereum: https://ethereum.org/
+.. _Litecoin: https://litecoin.org/
 
 .. image:: https://travis-ci.org/joowani/quadriga.svg?branch=master
     :target: https://travis-ci.org/joowani/quadriga
@@ -76,3 +78,4 @@ Contents
     errors
     logging
     public
+    contributing

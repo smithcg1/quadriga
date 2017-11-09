@@ -3,7 +3,10 @@ from __future__ import absolute_import, unicode_literals
 import logging
 
 from quadriga.rest_client import RestClient
-from quadriga.exceptions import *
+from quadriga.exceptions import (
+    InvalidCurrencyError,
+    InvalidOrderBookError
+)
 
 
 class QuadrigaClient(object):
@@ -69,7 +72,7 @@ class QuadrigaClient(object):
 
     def _verify_book(self, book):
         """Verify if the order book is valid and return it (or the default).
-        
+
         :param book: the name of the order book
         :type book: str | unicode
         :returns: the name of the order book to use
@@ -87,7 +90,7 @@ class QuadrigaClient(object):
 
     def _verify_currency(self, currency):
         """Verify if the currency is valid.
-        
+
         :param currency: the major currency
             (``"bitcoin"``/``"ether"``/``"litecoin"``)
         :type currency: str | unicode
@@ -252,7 +255,7 @@ class QuadrigaClient(object):
 
     def sell_market_order(self, amount, book=None):
         """Sell market order.
-        
+
         :param amount: the amount of major currency to sell at market price
         :type amount: int | float | str | unicode
         :param book: the name of the order book
@@ -325,7 +328,7 @@ class QuadrigaClient(object):
         :param currency: the major currency
             (``"bitcoin"``/``"ether"``/``"litecoin"``)
         :type currency: str | unicode
-        :returns: the user's deposit address on 
+        :returns: the user's deposit address on
         :rtype: str | unicode
         :raises InvalidCurrencyError: on unknown currency
         """

@@ -8,7 +8,11 @@ import requests
 
 from quadriga import QuadrigaClient
 from quadriga import RestClient
-from quadriga.exceptions import *
+from quadriga.exceptions import (
+    RequestError,
+    InvalidCurrencyError,
+    InvalidOrderBookError
+)
 from quadriga.version import VERSION
 
 test_key = 'test_api_key'
@@ -16,7 +20,7 @@ test_secret = 'test_api_secret'
 test_client_id = 'test_client_id'
 test_nonce = 1491481256000
 test_book = 'btc_usd'
-test_body = {'foo': 'bar'}
+test_body = {'foo': {'bar': 'baz'}}
 test_address = 'test_address'
 test_url = 'https://api.quadrigacx.com'
 test_headers = {'bar': 'baz'}
@@ -458,7 +462,6 @@ def test_lookup_order(requests_post, logger):
         "[client: test_client_id] look up order foobar")
 
 
-
 def test_cancel_order(requests_post, logger):
     client = build_client()
     output = client.cancel_order('foobar')
@@ -527,7 +530,7 @@ def test_withdraw(requests_post, logger):
     assert output == test_body
     requests_post.assert_called_with(
         url=build_url('/ether_withdrawal'),
-        json = {
+        json={
             'address': test_address,
             'amount': 1000,
             'key': test_key,
@@ -542,7 +545,7 @@ def test_withdraw(requests_post, logger):
     assert output == test_body
     requests_post.assert_called_with(
         url=build_url('/bitcoin_withdrawal'),
-        json = {
+        json={
             'address': test_address,
             'amount': 1000,
             'key': test_key,
@@ -557,7 +560,7 @@ def test_withdraw(requests_post, logger):
     assert output == test_body
     requests_post.assert_called_with(
         url=build_url('/litecoin_withdrawal'),
-        json = {
+        json={
             'address': test_address,
             'amount': 1000,
             'key': test_key,

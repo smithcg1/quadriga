@@ -29,14 +29,15 @@ Python Client for QuadrigaCX
 Introduction
 ============
 
-**Quadriga** is a Python client for QuadrigaCX_, a cryptocurrency exchange
-platform based in Vancouver, BC, Canada. It wraps the latest version of the
-`REST API`_ provided by the exchange and facilitates the process of trading
-bitcoin, ethereum and litecoin.
+**Quadriga** is a Python client for QuadrigaCX_, a Canadian cryptocurrency
+exchange platform. It wraps `REST API v2`_ and facilitates the process of
+trading Bitcoin_, Ethereum_ and Litecoin_.
 
 .. _QuadrigaCX: https://www.quadrigacx.com
-.. _REST API: https://www.quadrigacx.com/api_info
-
+.. _REST API v2: https://www.quadrigacx.com/api_info
+.. _Bitcoin: https://bitcoin.org/
+.. _Ethereum: https://ethereum.org/
+.. _Litecoin: https://litecoin.org/
 
 Requirements
 ============
@@ -140,5 +141,12 @@ Here are some usage examples:
 
 Check out the full `API documentation`_ for more details!
 
+Contributing
+============
+
+Please have a look at this page_ before submitting a pull request. Thanks!
+
 .. _API documentation:
-    http://quadriga.readthedocs.io/en/latest/index.html
+    http://quadriga.readthedocs.io/en/master/index.html
+.. _page:
+    http://quadriga.readthedocs.io/en/master/contributing.html

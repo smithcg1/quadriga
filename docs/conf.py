@@ -22,7 +22,7 @@ import sys
 
 sys.path.insert(0, os.path.abspath('../quadriga'))
 
-from quadriga.version import VERSION
+from quadriga.version import VERSION  # noqa: E402
 
 # -- General configuration ------------------------------------------------
 
