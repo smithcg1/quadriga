@@ -20,7 +20,8 @@ def main():
         orderTimeStamp, orderBids, orderAsks = pullPublicOrders()
         writeListToSQLdb(orderTimeStamp, 0, orderBids)
         writeListToSQLdb(orderTimeStamp, 1, orderAsks)
-
+        conn.close()
+        
 def pullPublicOrders():
         orderData = client.get_public_orders()
         orderTimeStamp = int(orderData['timestamp'])
@@ -40,7 +41,7 @@ def writeListToSQLdb(orderTimeStamp, orderType, orders):
         transaction = [(orderTimeStamp, orderType, int(order[1]*(10**8)), int(order[0]*(10**2))) for order in orders]
 
         c.executemany("INSERT INTO transactionOrders (timeStamp, type, amount, price) VALUES (?,?,?,?);",(transaction))
-        
+        conn.commit()
         
         
 main()
