@@ -1,0 +1,21 @@
+from quadriga import QuadrigaClient
+
+def main():
+	initialize()
+
+
+def initialize():
+	# Initialize the QuadrigaCX client
+	client = QuadrigaCliet(
+    	       api_key = 'api_key',
+    	       api_secret = 'api_secret',
+    	       client_id = 'client_id',
+    	       default_book = 'bch_cad'
+	       )
+
+
+def pullPublicOrders():
+	orders = client.get_public_orders()
+	print(orders)
+
+main()
